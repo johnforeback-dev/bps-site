@@ -4,6 +4,13 @@ import type { Benchmark } from '@/lib/market';
 
 const SCALE = 25; // bps shown at full bar length
 
+function describeChange(c: number | null) {
+  if (c === null) return 'change unavailable';
+  if (c === 0) return 'unchanged on the day';
+  const n = Math.abs(c);
+  return `${c > 0 ? 'up' : 'down'} ${n} basis ${n === 1 ? 'point' : 'points'}`;
+}
+
 export default function MarketRows({ rows }: { rows: Benchmark[] }) {
   const [open, setOpen] = useState<string | null>(null);
   return (
@@ -22,7 +29,7 @@ export default function MarketRows({ rows }: { rows: Benchmark[] }) {
           return (
             <div key={r.key}>
               <button type="button" className="bm" aria-expanded={isOpen} onClick={() => setOpen(isOpen ? null : r.key)}
-                aria-label={`${r.label}: ${r.level}, ${c === null ? 'change unavailable' : `${c > 0 ? 'up' : c < 0 ? 'down' : 'unchanged'} ${Math.abs(c)} basis points`}. Show explanation.`}>
+                aria-label={`${r.label}: ${r.level}, ${describeChange(c)}. Show explanation.`}>
                 <span className="bm__label">
                   <span className="bm__name">{r.label}
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><circle cx="7" cy="7" r="6" /><path d="M7 6v4M7 4v.5" /></svg></span>
